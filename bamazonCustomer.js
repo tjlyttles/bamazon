@@ -2,6 +2,8 @@ var mysql = require('mysql')
 var inquirer = require('inquirer')
 var chosenItem
 var amountLeft 
+var totalPaid
+var itemIndex
 
 var connection = mysql.createConnection({
     host: "localhost",
@@ -26,6 +28,7 @@ connection.connect(function (err) {
 function start() {
     chosenItem = ''
     amountLeft = ''
+    totalPaid = ''
     inquirer.prompt([
         {
             name: 'userChoice',
@@ -60,7 +63,7 @@ function customerOrder() {
                     if (isNaN(value)) {   
                         console.log('\n Please enter the id number matching the product you want to purchase.')
                         return false
-                    } else if (value > results.length || value < 1) {       
+                    } else if (value < 1) {       
                         console.log('\n Please enter the id number matching the product you want to purchase.')         
                         return false
                     } else {
@@ -83,22 +86,26 @@ function customerOrder() {
         ]).then(function(answer) {
             
             connection.query(
-                'SELECT item_id, price, stock_quantity FROM products', function(err, results) {
+                'SELECT item_id, price, stock_quantity, product_sales FROM products', function(err, results) {
                     if (err) throw err
-                               
+                    
                     for (var i = 0; i < results.length; i++) {
                         if (results[i].item_id === answer.item_id) {       
                             chosenItem = results[i]
-                            
+                            itemIndex = i
                         }
                     }
-                    console.log(chosenItem.stock_quantity)
-                    if (answer.item_amount > chosenItem.stock_quantity){
+                    if (itemIndex === undefined) {
+                        console.log('This item ID is not available.')
+                        start()
+                    } else if (answer.item_amount > chosenItem.stock_quantity){
                         console.log('Insufficient quantity. Please choose a lower amount.')
                         start()
                     } else {
+                        totalPaid = answer.item_amount * results[itemIndex].price
                         amountLeft = chosenItem.stock_quantity - answer.item_amount
-                        console.log('Purchase has been placed. Your total comes to $' + (answer.item_amount * results[(answer.item_id - 1)].price))
+                        console.log('Purchase has been placed. Your total comes to $' + totalPaid)
+                        totalPaid += results[itemIndex].product_sales
                         updateProduct()                       
                     }
                 }
@@ -109,19 +116,22 @@ function customerOrder() {
 }
 
 function updateProduct() {
-
     var query = connection.query(
-        "UPDATE products SET ? WHERE ?",
+        "UPDATE products SET ?, ? WHERE ?",
         [
             {
                 stock_quantity: amountLeft
             },
             {
+                product_sales: totalPaid
+            },
+            {
                 item_id: chosenItem.item_id
             }
         ],
-        function(error, res) {
-            if (error) throw err;            
+        function(err, res) {
+            if (err) throw err;     
+            console.log(res.affectedRows + " product updated!\n")       
             start()
         }
     )

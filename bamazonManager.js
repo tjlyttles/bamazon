@@ -33,17 +33,17 @@ function start() {
         
         switch(answer.userChoice) {
             case 'View Products.': 
-                listProducts();
-                break;
+                listProducts()
+                break
             case 'View Low Inventory':
-                lowInventory();
-                break;
+                lowInventory()
+                break
             case 'Add To Inventory':
-                orderInventory();
-                break;
+                orderInventory()
+                break
             case 'Add New Product':
-                addProduct();
-                break;
+                addProduct()
+                break
             default: connection.end()            
         }       
     })
@@ -166,19 +166,21 @@ function addProduct() {
             }
         }
     ]).then(function(answer){
-        connection.query(
+        var query = connection.query(
             "INSERT INTO products SET ?", 
             {
                 product_name: answer.itemName,                    
                 stock_quantity: answer.quantity,                    
                 price: answer.price,
-                department_name: answer.departmentName
+                department_name: answer.departmentName,
+                product_sales: 0
             },
             function(err, res) {
                 if (err) throw err;  
                 console.log(res.affectedRows + " product inserted!\n")       
                 start()
             }
-        )        
+        )
+        console.log(query.sql)        
     })
 }
