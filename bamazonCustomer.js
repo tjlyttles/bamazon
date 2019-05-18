@@ -95,6 +95,7 @@ function customerOrder() {
                             itemIndex = i
                         }
                     }
+                    
                     if (itemIndex === undefined) {
                         console.log('This item ID is not available.')
                         start()
