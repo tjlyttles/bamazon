@@ -1,5 +1,5 @@
 # Bamazon 
-## This command-line application acts like a storefront and is created to take in user inputs and prompts and outputting requested information working with an SQL database.
+## This command-line application acts as a storefront and is created to take in user inputs and prompts that will output requested information working with a SQL database that tracks all product and sales information.
 
 ### User: Customer
 Customers are given a prompt asking if they would like to make a purchase and displays all products available to choose from:
@@ -34,10 +34,10 @@ Check for low inventory:
 
 Add stock to the database's inventory:
 
-![GitHub Logo](/images/bamazon_manager_inventory.png)
+![GitHub Logo](/images/bamazon_manager_add_inventory.png)
 ![](url)
 
-![GitHub Logo](/images/bamazon_manager_inventory2.png)
+![GitHub Logo](/images/bamazon_manager_add_inventory2.png)
 ![](url)
 
 Or add a new product to the database:
@@ -52,7 +52,7 @@ The supervisor can check and track product sales across the store's departments 
 ![GitHub Logo](/images/bamazon_supervisor_view_sales.png)
 ![](url)
 
-They can also add in a new department:
+Supervisors can also add in a new department like so:
 
 ![GitHub Logo](/images/bamazon_supervisor_add_department.png)
 ![](url)
